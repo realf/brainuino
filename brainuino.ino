@@ -34,10 +34,10 @@ void setup()
   time = 0;
   
   // TODO: the following settings should be readen from EEPROM
-  gameType = SI;
-  withFalseStart = false;
-  timer1 = 5;
-  timer2 = 5;
+  gameType = BRAIN;
+  withFalseStart = true;
+  timer1 = 60;
+  timer2 = 20;
   preSignal = 0;
 }
 
