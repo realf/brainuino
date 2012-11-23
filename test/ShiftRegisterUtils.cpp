@@ -14,7 +14,7 @@ ShiftRegisterUtils::ShiftRegisterUtils(uint8_t latchPin, uint8_t clockPin,
     _latchPin = latchPin;
     _clockPin = clockPin;
     _dataPin = dataPin;
-    //digitalWrite(_clockPin, LOW);
+    digitalWrite(_clockPin, LOW);
     _output = 0;
 }
 

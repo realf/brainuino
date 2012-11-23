@@ -18,15 +18,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly: 
-  bool t = false;
+  bool t = true;
   while(1)
   {
-    t = !t;
     for (int i = 0; i < 8; i++)
     {
       shiftRegisterUtils.digitalWriteToShiftRegister(i, t? HIGH : LOW);
       delay(500);
     }
     delay(1000);
+    t = !t;
   }
 }
