@@ -15,7 +15,7 @@ class ShiftRegisterUtils
 {
 public:
     ShiftRegisterUtils(uint8_t latchPin, uint8_t clockPin, uint8_t dataPin);
-    void digitalWriteToShiftRegister(uint8_t shiftRegPin, uint8_t val);
+    void digitalWriteToShiftRegister(uint8_t shiftRegisterOutputPin, uint8_t val);
     
 private:
     // In this variable we store the current value of the shift register output

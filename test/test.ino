@@ -1,32 +1,27 @@
+#include <LiquidCrystal.h>
 #include "ShiftRegisterUtils.h"
+#include "ShiftRegisterPinout.h"
+#include "LCDOverShiftRegister.h"
 
-//Pin connected to ST_CP of 74HC595
-int latchPin = 8;
-//Pin connected to SH_CP of 74HC595
-int clockPin = 12;
-//Pin connected to DS of 74HC595
-int dataPin = 11;
-
-ShiftRegisterUtils shiftRegisterUtils(latchPin, clockPin, dataPin);
+LCDOverShiftRegister lcd(LATCH, CLOCK, DATA);
 
 void setup() {
   //set pins to output because they are addressed in the main loop
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(dataPin, OUTPUT);
+  pinMode(LATCH, OUTPUT);
+  pinMode(CLOCK, OUTPUT);
+  pinMode(DATA, OUTPUT);
 }
 
 void loop() {
   // put your main code here, to run repeatedly: 
-  bool t = true;
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 1);
   while(1)
   {
     for (int i = 0; i < 8; i++)
     {
-      shiftRegisterUtils.digitalWriteToShiftRegister(i, t? HIGH : LOW);
+      lcd.uprint("hello world");
       delay(500);
     }
-    delay(1000);
-    t = !t;
   }
 }
