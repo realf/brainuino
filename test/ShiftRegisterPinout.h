@@ -20,11 +20,11 @@
 #ifndef ____ShiftRegisterPinout__
 #define ____ShiftRegisterPinout__
 
-//Pin connected to ST_CP of 74HC595
+// Pin connected to ST_CP of 74HC595
 #define LATCH    8
-//Pin connected to SH_CP of 74HC595
+// Pin connected to SH_CP of 74HC595
 #define CLOCK   12
-//Pin connected to DS of 74HC595
+// Pin connected to DS of 74HC595
 #define DATA    11
 
 // Pins of 74HC595
