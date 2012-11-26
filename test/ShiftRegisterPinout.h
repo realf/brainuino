@@ -27,12 +27,22 @@
 // Pin connected to DS of 74HC595
 #define DATA    11
 
-// Bits of 74HC595
-#define LCDRS    0
-#define LCDEN    1
-#define LCDD0    2
-#define LCDD1    3
-#define LCDD2    4
-#define LCDD3    5
+// Shift register pin bitmasks
+#define SHIFTREGPIN15   0x0
+#define SHIFTREGPIN1    0x1
+#define SHIFTREGPIN2    0x2
+#define SHIFTREGPIN3    0x4
+#define SHIFTREGPIN4    0x8
+#define SHIFTREGPIN5    0x10
+#define SHIFTREGPIN6    0x20
+#define SHIFTREGPIN7    0x40
+
+// Pins of 74HC595
+#define LCDRS    SHIFTREGPIN15
+#define LCDEN    SHIFTREGPIN1
+#define LCDD0    SHIFTREGPIN2
+#define LCDD1    SHIFTREGPIN3
+#define LCDD2    SHIFTREGPIN4
+#define LCDD3    SHIFTREGPIN5
 
 #endif /*defined ____ShiftRegisterPinout__ */

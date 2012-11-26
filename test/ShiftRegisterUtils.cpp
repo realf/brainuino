@@ -30,13 +30,10 @@ void ShiftRegisterUtils::digitalWriteToShiftRegister(uint8_t shiftRegisterOutput
     // Ground latchPin and hold low for as long as you are transmitting
     digitalWrite(_latchPin, LOW);
     
-    // bitmask
-    uint8_t bit = 1 << shiftRegisterOutputPin;
-    
     if (val == LOW)
-        _output &= ~bit;
+        _output &= ~shiftRegisterOutputPin;
     else
-        _output |= bit;
+        _output |= shiftRegisterOutputPin;
     
     shiftOut(_dataPin, _clockPin, MSBFIRST, _output);
     
