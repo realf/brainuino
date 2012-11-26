@@ -28,14 +28,14 @@
 #define DATA    11
 
 // Shift register pin bitmasks
-#define SHIFTREGPIN15   0x0
-#define SHIFTREGPIN1    0x1
-#define SHIFTREGPIN2    0x2
-#define SHIFTREGPIN3    0x4
-#define SHIFTREGPIN4    0x8
-#define SHIFTREGPIN5    0x10
-#define SHIFTREGPIN6    0x20
-#define SHIFTREGPIN7    0x40
+#define SHIFTREGPIN15   0x01
+#define SHIFTREGPIN1    0x02
+#define SHIFTREGPIN2    0x04
+#define SHIFTREGPIN3    0x08
+#define SHIFTREGPIN4    0x10
+#define SHIFTREGPIN5    0x20
+#define SHIFTREGPIN6    0x40
+#define SHIFTREGPIN7    0x80
 
 // Pins of 74HC595
 #define LCDRS    SHIFTREGPIN15
