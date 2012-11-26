@@ -27,8 +27,8 @@
 // Pin connected to DS of 74HC595
 #define DATA    11
 
-// Pins of 74HC595
-#define LCDRS   15
+// Bits of 74HC595
+#define LCDRS    0
 #define LCDEN    1
 #define LCDD0    2
 #define LCDD1    3

@@ -11,11 +11,34 @@
 #include "utf8.h"
 #include "font.h"
 
+//#include <stdio.h>
+//#include <string.h>
+//#include <inttypes.h>
+//#include "Arduino.h"
+
+// When the display powers up, it is configured as follows:
+//
+// 1. Display clear
+// 2. Function set: 
+//    DL = 1; 8-bit interface data 
+//    N = 0; 1-line display 
+//    F = 0; 5x8 dot character font 
+// 3. Display on/off control: 
+//    D = 0; Display off 
+//    C = 0; Cursor off 
+//    B = 0; Blinking off 
+// 4. Entry mode set: 
+//    I/D = 1; Increment by 1 
+//    S = 0; No shift 
+//
+// Note, however, that resetting the Arduino doesn't reset the LCD, so we
+// can't assume that its in that state when a sketch starts (and the
+// LiquidCrystal constructor is called).
+
 LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
     uint8_t shiftRegisterClockPin, uint8_t shiftRegisterDataPin, 
     uint8_t lcdRs, uint8_t lcdEnable, uint8_t lcdD0, uint8_t lcdD1,
     uint8_t lcdD2, uint8_t lcdD3)
-: LiquidCrystal(lcdRs, lcdEnable, lcdD0, lcdD1, lcdD2, lcdD3)
 {
     Serial.println("constructor0");
     init(shiftRegisterLatchPin, shiftRegisterClockPin, shiftRegisterDataPin, 
@@ -24,7 +47,6 @@ LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
 
 LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
     uint8_t shiftRegisterClockPin, uint8_t shiftRegisterDataPin)
-: LiquidCrystal(LCDRS, LCDEN, LCDD0, LCDD1, LCDD2, LCDD3)
 {
     Serial.println("constructor1");
     init(shiftRegisterLatchPin, shiftRegisterClockPin, shiftRegisterDataPin, LCDRS, LCDEN, LCDD0, LCDD1, LCDD2, LCDD3);
@@ -191,9 +213,108 @@ size_t LCDOverShiftRegister::uprint(char *rawstr)
     return print(result);
 }
 
+/********** high level commands, for the user! */
+void LCDOverShiftRegister::clear()
+{
+  command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
+  delayMicroseconds(2000);  // this command takes a long time!
+}
+
+void LCDOverShiftRegister::home()
+{
+  command(LCD_RETURNHOME);  // set cursor position to zero
+  delayMicroseconds(2000);  // this command takes a long time!
+}
+
+void LCDOverShiftRegister::setCursor(uint8_t col, uint8_t row)
+{
+  int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
+  if ( row >= _numlines ) {
+    row = _numlines-1;    // we count rows starting w/0
+  }
+  
+  command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
+}
+
+// Turn the display on/off (quickly)
+void LCDOverShiftRegister::noDisplay()
+{
+  _displaycontrol &= ~LCD_DISPLAYON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+void LCDOverShiftRegister::display()
+{
+  _displaycontrol |= LCD_DISPLAYON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+// Turns the underline cursor on/off
+void LCDOverShiftRegister::noCursor()
+{
+  _displaycontrol &= ~LCD_CURSORON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+void LCDOverShiftRegister::cursor()
+{
+  _displaycontrol |= LCD_CURSORON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+// Turn on and off the blinking cursor
+void LCDOverShiftRegister::noBlink()
+{
+  _displaycontrol &= ~LCD_BLINKON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+void LCDOverShiftRegister::blink()
+{
+  _displaycontrol |= LCD_BLINKON;
+  command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+// These commands scroll the display without changing the RAM
+void LCDOverShiftRegister::scrollDisplayLeft(void)
+{
+  command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+}
+void LCDOverShiftRegister::scrollDisplayRight(void)
+{
+  command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+}
+
+// This is for text that flows Left to Right
+void LCDOverShiftRegister::leftToRight(void)
+{
+  _displaymode |= LCD_ENTRYLEFT;
+  command(LCD_ENTRYMODESET | _displaymode);
+}
+
+// This is for text that flows Right to Left
+void LCDOverShiftRegister::rightToLeft(void)
+{
+  _displaymode &= ~LCD_ENTRYLEFT;
+  command(LCD_ENTRYMODESET | _displaymode);
+}
+
+// This will 'right justify' text from the cursor
+void LCDOverShiftRegister::autoscroll(void)
+{
+  _displaymode |= LCD_ENTRYSHIFTINCREMENT;
+  command(LCD_ENTRYMODESET | _displaymode);
+}
+
+// This will 'left justify' text from the cursor
+void LCDOverShiftRegister::noAutoscroll(void)
+{
+  _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+  command(LCD_ENTRYMODESET | _displaymode);
+}
+
+
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
-void LCDOverShiftRegister::createChar(uint8_t location, uint8_t charmap[]) {
+void LCDOverShiftRegister::createChar(uint8_t location, uint8_t charmap[])
+{
     location &= 0x7; // we only have 8 locations 0-7
     command(LCD_SETCGRAMADDR | (location << 3));
     for (int i=0; i<8; i++) {
@@ -226,7 +347,7 @@ void LCDOverShiftRegister::send(uint8_t value, uint8_t mode)
     Serial.print("send ");
     Serial.print(value, HEX);
     Serial.print(" ");
-    Serial.println(mode, HEX);
+    Serial.println(mode);
     _shiftRegisterUtils->digitalWriteToShiftRegister(_rs_pin, mode);
     
     if (_displayfunction & LCD_8BITMODE) {
@@ -256,7 +377,6 @@ void LCDOverShiftRegister::write4bits(uint8_t value)
         _shiftRegisterUtils->digitalWriteToShiftRegister(_data_pins[i], (value >> i) & 0x01);
     }
     
-    delay(1000);
     pulseEnable();
 }
 

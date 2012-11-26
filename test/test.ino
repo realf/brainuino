@@ -15,18 +15,26 @@ void setup() {
   Serial.begin(9600);
   lcd = new LCDOverShiftRegister(LATCH, CLOCK, DATA);
   utils = new ShiftRegisterUtils(LATCH, CLOCK, DATA);
-    // set up the LCD's number of columns and rows: 
-  //lcd.begin(16, 2);
+  
+  // set up the LCD's number of columns and rows: 
+  Serial.println("<<<<<<<<");
+  Serial.println("--BEGIN");
+  lcd->begin(16,2);
   // Print a message to the LCD.
-  //lcd.uprint("hello, world!");
+  Serial.println("--PRINT");
+  lcd->print("hello, world!");
 }
 
 void loop() {
-  lcd->begin(16,2);
    // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
+  Serial.println("========");
+  Serial.println("--SETCURSOR");
   lcd->setCursor(0, 1);
   // print the number of seconds since reset:
-  lcd->uprint("12345");
+  Serial.println("--PRINT SEC");
+  lcd->print(millis()/1000);
+  Serial.println(">>>>>>>>");
+  delay(2000);
   //utils.digitalWriteToShiftRegister(6, HIGH);
 }

@@ -25,6 +25,8 @@ void ShiftRegisterUtils::digitalWriteToShiftRegister(uint8_t shiftRegisterOutput
     Serial.print(shiftRegisterOutputPin);
     Serial.print(" ");
     Serial.println(val);
+    Serial.print("* output * ");
+    Serial.println(_output, BIN);
     // Ground latchPin and hold low for as long as you are transmitting
     digitalWrite(_latchPin, LOW);
     
@@ -41,4 +43,6 @@ void ShiftRegisterUtils::digitalWriteToShiftRegister(uint8_t shiftRegisterOutput
     // Return the latch pin high to signal chip that it
     // no longer needs to listen for information
     digitalWrite(_latchPin, HIGH);
+    Serial.print("** output ** ");
+    Serial.println(_output, BIN);
 }
