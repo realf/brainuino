@@ -40,7 +40,6 @@ LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
     uint8_t lcdRs, uint8_t lcdEnable, uint8_t lcdD0, uint8_t lcdD1,
     uint8_t lcdD2, uint8_t lcdD3)
 {
-    Serial.println("constructor0");
     init(shiftRegisterLatchPin, shiftRegisterClockPin, shiftRegisterDataPin, 
         lcdRs, lcdEnable, lcdD0, lcdD1, lcdD2, lcdD3);
 }
@@ -48,7 +47,6 @@ LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
 LCDOverShiftRegister::LCDOverShiftRegister(uint8_t shiftRegisterLatchPin,
     uint8_t shiftRegisterClockPin, uint8_t shiftRegisterDataPin)
 {
-    Serial.println("constructor1");
     init(shiftRegisterLatchPin, shiftRegisterClockPin, shiftRegisterDataPin, LCDRS, LCDEN, LCDD0, LCDD1, LCDD2, LCDD3);
 }
 
@@ -65,24 +63,6 @@ void LCDOverShiftRegister::init(uint8_t shiftRegisterLatchPin,
     uint8_t lcdRs, uint8_t lcdEnable, uint8_t lcdD0, uint8_t lcdD1,
     uint8_t lcdD2, uint8_t lcdD3)
 {
-    Serial.print("init ");
-    Serial.print(shiftRegisterLatchPin);
-    Serial.print(" ");
-    Serial.print(shiftRegisterClockPin);
-    Serial.print(" ");
-    Serial.print(shiftRegisterDataPin);
-    Serial.print(" ");
-    Serial.print(lcdRs);
-    Serial.print(" ");
-    Serial.print(lcdEnable);
-    Serial.print(" ");
-    Serial.print(lcdD0);
-    Serial.print(" ");
-    Serial.print(lcdD1);
-    Serial.print(" ");
-    Serial.print(lcdD2);
-    Serial.print(" ");
-    Serial.println(lcdD3);
     
     _shiftRegisterUtils = new ShiftRegisterUtils(shiftRegisterLatchPin, shiftRegisterClockPin, shiftRegisterDataPin);
 
@@ -105,12 +85,6 @@ void LCDOverShiftRegister::init(uint8_t shiftRegisterLatchPin,
 
 void LCDOverShiftRegister::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 {
-    Serial.print("begin ");
-    Serial.print(cols);
-    Serial.print(" ");
-    Serial.print(lines);
-    Serial.print(" ");
-    Serial.println(dotsize);
     
     if (lines > 1) {
         _displayfunction |= LCD_2LINE;
@@ -184,8 +158,6 @@ void LCDOverShiftRegister::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 
 size_t LCDOverShiftRegister::uprint(char *rawstr)
 { 
-    Serial.print("uprint ");
-    Serial.println(rawstr);
     int32_t ucode;
     int i, j;
     int numcodes = sizeof(charmap)/sizeof(charcode);
@@ -326,15 +298,11 @@ void LCDOverShiftRegister::createChar(uint8_t location, uint8_t charmap[])
 
 inline void LCDOverShiftRegister::command(uint8_t value)
 {
-    Serial.print("command ");
-    Serial.println(value, HEX);
     send(value, LOW);
 }
 
 inline size_t LCDOverShiftRegister::write(uint8_t value)
 {
-    Serial.print("write ");
-    Serial.println(value, HEX);
     send(value, HIGH);
     return 1; // assume sucess
 }
@@ -344,10 +312,6 @@ inline size_t LCDOverShiftRegister::write(uint8_t value)
 // write either command or data, with automatic 4/8-bit selection
 void LCDOverShiftRegister::send(uint8_t value, uint8_t mode)
 {
-    Serial.print("send ");
-    Serial.print(value, HEX);
-    Serial.print(" ");
-    Serial.println(mode);
     _shiftRegisterUtils->digitalWriteToShiftRegister(_rs_pin, mode);
     
     if (_displayfunction & LCD_8BITMODE) {
@@ -360,7 +324,6 @@ void LCDOverShiftRegister::send(uint8_t value, uint8_t mode)
 
 void LCDOverShiftRegister::pulseEnable(void)
 {
-    Serial.println("pulseEnable ");
     _shiftRegisterUtils->digitalWriteToShiftRegister(_enable_pin, LOW);
     delayMicroseconds(1);
     _shiftRegisterUtils->digitalWriteToShiftRegister(_enable_pin, HIGH);
@@ -371,8 +334,6 @@ void LCDOverShiftRegister::pulseEnable(void)
 
 void LCDOverShiftRegister::write4bits(uint8_t value)
 {
-    Serial.print("write4bits ");
-    Serial.println(value, BIN);
     for (int i = 0; i < 4; i++) {
         _shiftRegisterUtils->digitalWriteToShiftRegister(_data_pins[i], (value >> i) & 0x01);
     }
@@ -382,8 +343,6 @@ void LCDOverShiftRegister::write4bits(uint8_t value)
 
 void LCDOverShiftRegister::write8bits(uint8_t value) 
 {
-    Serial.print("write8bits ");
-    Serial.println(value, BIN);
     for (int i = 0; i < 8; i++) 
     {
         _shiftRegisterUtils->digitalWriteToShiftRegister(_data_pins[i], (value >> i) & 0x01);
